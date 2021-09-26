@@ -1,0 +1,11 @@
+name: CarsPlugin
+version: ${project.version}
+main: com.gmail.anthony17j.carsplugin.CarsPlugin
+api-version: 1.17
+authors: [ Uxzylon ]
+description: PLACEHOLDER
+commands:
+  cars:
+    description: PLACEHOLDER
+    usage: /<command> <fonction>
+    permission: cars.command
