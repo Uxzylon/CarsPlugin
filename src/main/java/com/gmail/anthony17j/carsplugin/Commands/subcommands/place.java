@@ -1,6 +1,7 @@
 package com.gmail.anthony17j.carsplugin.Commands.subcommands;
 
 import com.gmail.anthony17j.carsplugin.Commands.SubCommand;
+import com.gmail.anthony17j.carsplugin.Utils.NBTUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -8,13 +9,13 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class place extends SubCommand {
 
@@ -67,24 +68,26 @@ public class place extends SubCommand {
         item.setItemMeta(meta);
 
         Location location = new Location(player.getWorld(),locationX,locationY,locationZ,yaw,0);
-        Location location2 = new Location(player.getWorld(),locationX,locationY+1,locationZ,yaw,0);
+        Location location2 = new Location(player.getWorld(),locationX,locationY+0.5,locationZ,yaw,0);
 
-        /*ArmorStand stand = (ArmorStand) player.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
+        String ken = NBTUtils.getString(item, "mtvehicles.kenteken");
+
+
+        ArmorStand stand = (ArmorStand) player.getWorld().spawnEntity(location2, EntityType.ARMOR_STAND);
         stand.setVisible(false);
-        stand.setCustomName("CARS_SKIN");
-        stand.getEquipment().setHelmet(item);*/
+        stand.setGravity(false);
+        stand.setCustomName("CAR_SEAT_DRIVER_" + ken);
 
-        /*ArmorStand stand2 = (ArmorStand) player.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
-        stand.setVisible(false);
-        stand.setCustomName("CARS_MAIN");*/
+        ArmorStand stand2 = (ArmorStand) player.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
+        stand2.setVisible(false);
+        String skinName = "CAR_SKIN_" + ken;
+        stand2.setCustomName(skinName);
+        stand2.getEquipment().setHelmet(item);
+        stand.addScoreboardTag(skinName);
 
-        ArmorStand stand3 = (ArmorStand) player.getWorld().spawnEntity(location2, EntityType.ARMOR_STAND);
-        stand3.setVisible(false);
-        //stand3.setGravity(false);
-        stand3.setCustomName("CARS_SEAT");
-        stand3.getEquipment().setHelmet(item);
+        //loop
+        //CAR_SEAT_PASSENGER
 
-
-        player.sendMessage(ChatColor.YELLOW + "Car Placed!");
+        player.sendMessage(ChatColor.YELLOW + "Car Placed! ken=" + ken);
     }
 }

@@ -11,7 +11,12 @@ public final class CarsPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
-        this.getLogger().info("Enabled!");
+        plugin.getLogger().info("Enabled!");
+
+        plugin.getConfig().options().copyDefaults(true);
+        plugin.getConfig().options().header("CarsPlugin config file");
+        plugin.saveConfig();
+
 
         getCommand("cars").setExecutor(new carsCommand());
 
