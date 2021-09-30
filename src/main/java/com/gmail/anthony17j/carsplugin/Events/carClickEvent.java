@@ -14,8 +14,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.Collection;
-
 public class carClickEvent implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
@@ -37,6 +35,12 @@ public class carClickEvent implements Listener {
                 String id = a.getCustomName().split("_")[2];
 
                 Vehicle.seatSize.putIfAbsent(id, a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.seatSize"), PersistentDataType.INTEGER));
+                Vehicle.breakingSpeed.putIfAbsent(id, a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.breakingSpeed"), PersistentDataType.DOUBLE));
+                Vehicle.maxSpeed.putIfAbsent(id, a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.maxSpeed"), PersistentDataType.DOUBLE));
+                Vehicle.maxSpeedBackwards.putIfAbsent(id, a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.maxSpeedBackwards"), PersistentDataType.DOUBLE));
+                Vehicle.accelerationSpeed.putIfAbsent(id, a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.accelerationSpeed"), PersistentDataType.DOUBLE));
+                Vehicle.rotateSpeed.putIfAbsent(id, a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.rotateSpeed"), PersistentDataType.DOUBLE));
+                Vehicle.frictionSpeed.putIfAbsent(id, a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.frictionSpeed"), PersistentDataType.DOUBLE));
 
                 for (Entity entity : player.getWorld().getNearbyEntities(player.getLocation(),10d,10d,10d, (entity -> entity.getType() == EntityType.ARMOR_STAND))) {
                     if (entity.getCustomName() != null) {

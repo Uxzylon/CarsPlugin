@@ -120,6 +120,19 @@ public class place extends SubCommand {
                                     CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".Y"));
                             standDriver.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.seat" + i + ".Z"), PersistentDataType.DOUBLE,
                                     CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".Z"));
+
+                            standDriver.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.breakingSpeed"), PersistentDataType.DOUBLE,
+                                    CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.breakingSpeed"));
+                            standDriver.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.maxSpeed"), PersistentDataType.DOUBLE,
+                                    CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.maxSpeed"));
+                            standDriver.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.maxSpeedBackwards"), PersistentDataType.DOUBLE,
+                                    CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.maxSpeedBackwards"));
+                            standDriver.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.accelerationSpeed"), PersistentDataType.DOUBLE,
+                                    CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.accelerationSpeed"));
+                            standDriver.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.rotateSpeed"), PersistentDataType.DOUBLE,
+                                    CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.rotateSpeed"));
+                            standDriver.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.frictionSpeed"), PersistentDataType.DOUBLE,
+                                    CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.frictionSpeed"));
                         }
                     }
 

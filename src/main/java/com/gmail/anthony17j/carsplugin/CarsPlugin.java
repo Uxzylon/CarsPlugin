@@ -28,6 +28,12 @@ public final class CarsPlugin extends JavaPlugin {
         this.getConfig().addDefault("CarsList.Test.Seats.3.X", 1);
         this.getConfig().addDefault("CarsList.Test.Seats.3.Y", 0);
         this.getConfig().addDefault("CarsList.Test.Seats.3.Z", 0);
+        this.getConfig().addDefault("CarsList.Test.breakingSpeed", 0.03);
+        this.getConfig().addDefault("CarsList.Test.maxSpeed", 0.7);
+        this.getConfig().addDefault("CarsList.Test.maxSpeedBackwards", 0.35);
+        this.getConfig().addDefault("CarsList.Test.accelerationSpeed", 0.015);
+        this.getConfig().addDefault("CarsList.Test.rotateSpeed", 8);
+        this.getConfig().addDefault("CarsList.Test.frictionSpeed", 0.005);
         this.saveConfig();
 
         getCommand("cars").setExecutor(new carsCommand());
