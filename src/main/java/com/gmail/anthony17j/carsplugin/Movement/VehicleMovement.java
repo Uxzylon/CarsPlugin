@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.io.IOException;
 import java.util.Collection;
 
 public class VehicleMovement {
@@ -38,6 +39,7 @@ public class VehicleMovement {
         String id = player.getVehicle().getCustomName().replace("CAR_SEAT1_", "");
 
         ArmorStand standSkin = Vehicle.autoStand.get("CAR_SKIN_" + id);
+
         //ArmorStand standSeat = (ArmorStand) player.getVehicle();
 
         if (!(Vehicle.seatSize.get(id) == null)) {

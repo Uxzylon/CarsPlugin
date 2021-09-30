@@ -2,25 +2,19 @@ package com.gmail.anthony17j.carsplugin.Commands.subcommands;
 
 import com.gmail.anthony17j.carsplugin.CarsPlugin;
 import com.gmail.anthony17j.carsplugin.Commands.SubCommand;
-import com.gmail.anthony17j.carsplugin.Vehicle;
-import net.minecraft.nbt.NBTTagCompound;
+import com.gmail.anthony17j.carsplugin.Utils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class place extends SubCommand {
 
@@ -87,43 +81,48 @@ public class place extends SubCommand {
                     String id = generateLicencePlate();
 
                     Location location = new Location(player.getWorld(),locationX,locationY,locationZ,yaw,0);
-                    Location location2 = new Location(player.getWorld(),locationX,locationY+0.5,locationZ,yaw,0);
-                    Location location3 = new Location(player.getWorld(),locationX+1,locationY+0.5,locationZ,yaw,0);
-
 
                     ArmorStand standSkin = (ArmorStand) player.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
                     standSkin.setVisible(false);
                     standSkin.setCustomName("CAR_SKIN_" + id);
                     standSkin.getEquipment().setHelmet(item);
+                    Utils.setSlotsDisabled(standSkin, true);
 
-                    /*ArmorStand stand = (ArmorStand) player.getWorld().spawnEntity(location2, EntityType.ARMOR_STAND);
-                    stand.setVisible(false);
-                    stand.setGravity(false);
-                    stand.setCustomName("CAR_SEAT1_" + id);*/
+                    if (CarsPlugin.plugin.getConfig().getConfigurationSection("CarsList.Test.Seats") != null) {
+                        ArmorStand standDriver = null;
+                        for (int i = 1; i<= CarsPlugin.plugin.getConfig().getConfigurationSection("CarsList.Test.Seats").getKeys(false).size(); i++) {
+                            Location loc = new Location(
+                                    player.getWorld(),
+                                    locationX + CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".X"),
+                                    locationY + CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".Y"),
+                                    locationZ + CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".Z"),
+                                    yaw, 0
+                            );
+                            ArmorStand standSeatLoop = (ArmorStand) player.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
+                            if (i == 1) {
+                                standDriver = standSeatLoop;
+                            }
+                            standSeatLoop.setVisible(false);
+                            standSeatLoop.setGravity(false);
+                            standSeatLoop.setCustomName("CAR_SEAT" + i + "_" + id);
+                            standSeatLoop.getEquipment().setHelmet(item2);
+                            Utils.setSlotsDisabled(standSeatLoop, true);
+                            player.sendMessage(standSeatLoop.getCustomName());
+                            //Entity villager = player.getWorld().spawnEntity(location, EntityType.VILLAGER);
+                            //standSeatLoop.addPassenger(villager);
 
-                    //set nbt to stand entity
-                    //stand.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.seatSize"), PersistentDataType.INTEGER, 3);
+                            standDriver.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.seatSize"), PersistentDataType.INTEGER,
+                                    CarsPlugin.plugin.getConfig().getConfigurationSection("CarsList.Test.Seats").getKeys(false).size());
 
-                    //get nbt
-                    //player.sendMessage(stand.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.seatSize"), PersistentDataType.INTEGER).toString());
-
-
-                    for (int i = 1; i<= CarsPlugin.plugin.getConfig().getConfigurationSection("CarsList.Test.Seats").getKeys(false).size(); i++) {
-                        Location loc = new Location(
-                                player.getWorld(),
-                                locationX + CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".X"),
-                                locationY + CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".Y"),
-                                locationZ + CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".Z"),
-                                yaw, 0
-                        );
-                        ArmorStand standSeatLoop = (ArmorStand) player.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
-                        standSeatLoop.setVisible(false);
-                        standSeatLoop.setGravity(false);
-                        standSeatLoop.setCustomName("CAR_SEAT" + i + "_" + id);
-                        standSeatLoop.getEquipment().setHelmet(item2);
-                        //Entity villager = player.getWorld().spawnEntity(location, EntityType.VILLAGER);
-                        //standSeatLoop.addPassenger(villager);
+                            standDriver.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.seat" + i + ".X"), PersistentDataType.DOUBLE,
+                                    CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".X"));
+                            standDriver.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.seat" + i + ".Y"), PersistentDataType.DOUBLE,
+                                    CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".Y"));
+                            standDriver.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.seat" + i + ".Z"), PersistentDataType.DOUBLE,
+                                    CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".Z"));
+                        }
                     }
+
 
 
                     player.sendMessage(ChatColor.YELLOW + "Car Placed! id=" + id);
