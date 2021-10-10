@@ -5,13 +5,16 @@ import com.gmail.anthony17j.carsplugin.Vehicle;
 import net.minecraft.network.protocol.game.PacketPlayInSteerVehicle;
 import net.minecraft.network.protocol.game.PacketPlayOutEntityHeadRotation;
 import net.minecraft.world.entity.decoration.EntityArmorStand;
+import net.minecraft.world.level.levelgen.HeightMap;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftArmorStand;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
 import java.io.IOException;
@@ -65,15 +68,31 @@ public class VehicleMovement {
         }
 
         //updateStand
-        Location loc = standSkin.getLocation();
-        Location location = new Location(loc.getWorld(), loc.getX(), loc.getY() - 0.2, loc.getZ(), loc.getYaw(), loc.getPitch());
-        if (location.getBlock().getType().toString().contains("AIR") || location.getBlock().getType().toString().contains("WATER")) {
+        Location skinLocation = standSkin.getLocation();
+        Location location = new Location(skinLocation.getWorld(), skinLocation.getX(), skinLocation.getY() - 0.2, skinLocation.getZ(), skinLocation.getYaw(), skinLocation.getPitch());
+        if (location.getBlock().getBoundingBox().getMaxY() < skinLocation.getY()) {
             standSkin.setVelocity(new Vector(standSkin.getLocation().getDirection().multiply(Vehicle.speed.get(id)).getX(), -0.8, standSkin.getLocation().getDirection().multiply(Vehicle.speed.get(id)).getZ()));
-            return;
+        } else {
+            standSkin.setVelocity(new Vector(standSkin.getLocation().getDirection().multiply(Vehicle.speed.get(id)).getX(), 0.0, standSkin.getLocation().getDirection().multiply(Vehicle.speed.get(id)).getZ()));
         }
-        standSkin.setVelocity(new Vector(standSkin.getLocation().getDirection().multiply(Vehicle.speed.get(id)).getX(), 0.0, standSkin.getLocation().getDirection().multiply(Vehicle.speed.get(id)).getZ()));
 
-        //TODO updateSlab
+
+        //updateSlab
+        Block blockInFront = skinLocation.add(skinLocation.getDirection()).getBlock();
+        blockInFront.getCollisionShape().getBoundingBoxes().stream().anyMatch(boundingBox -> {
+            double blockHeight = boundingBox.getMaxY() + blockInFront.getY();
+            double dif = blockHeight - skinLocation.getY();
+            //player.sendMessage("blockInFront: " + blockInFront + " blockHeight: " + blockHeight + " pos: " + skinLocation.getY() + " dif: " + dif);
+            boolean upperBlockCanPass = blockInFront.getRelative(0,1,0).getCollisionShape().getBoundingBoxes().stream().anyMatch(boundingBox1 -> boundingBox1.getMaxY() <= 0.5) || blockInFront.getRelative(0,1,0).isPassable();
+            boolean isMatch = dif > 0 && dif <= 0.5 && upperBlockCanPass && blockInFront.getRelative(0,2,0).isPassable();
+            if (isMatch) {
+                ((CraftArmorStand) standSkin).getHandle().setLocation(standSkin.getLocation().getX(), standSkin.getLocation().getY() + 0.5, standSkin.getLocation().getZ(), standSkin.getLocation().getYaw(), standSkin.getLocation().getPitch());
+                ((CraftArmorStand) standDriver).getHandle().setLocation(standDriver.getLocation().getX(), standDriver.getLocation().getY() + 0.5, standDriver.getLocation().getZ(), standDriver.getLocation().getYaw(), standDriver.getLocation().getPitch());
+            }
+            return isMatch;
+        });
+
+
 
         if (ppisv.b() > 0.0) {
             ((CraftArmorStand) standSkin).getHandle().setLocation(standSkin.getLocation().getX(), standSkin.getLocation().getY(), standSkin.getLocation().getZ(), standSkin.getLocation().getYaw() - 8, standSkin.getLocation().getPitch());
@@ -134,5 +153,7 @@ public class VehicleMovement {
         //standSkin.setVelocity(new Vector(standSkin.getVelocity().getX(), -0.1, standSkin.getVelocity().getZ()));
 
 
+
+        //player.sendMessage("test");
     }
 }
