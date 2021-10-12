@@ -16,6 +16,7 @@ public class carsCommand implements TabExecutor {
     public carsCommand() {
         subCommands.add(new place());
         subCommands.add(new remove());
+        subCommands.add(new reload());
     }
 
     public ArrayList<SubCommand> getSubCommands() {
