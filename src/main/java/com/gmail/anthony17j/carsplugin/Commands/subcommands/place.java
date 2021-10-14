@@ -30,12 +30,12 @@ public class place extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "PLACEHOLDER";
+        return "Place a car";
     }
 
     @Override
     public String getSyntax() {
-        return "/cars place";
+        return "/cars place <car>";
     }
 
     @Override

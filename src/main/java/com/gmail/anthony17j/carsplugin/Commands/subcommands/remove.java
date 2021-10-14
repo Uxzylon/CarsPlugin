@@ -24,7 +24,7 @@ public class remove extends SubCommand {
 
     @Override
     public String getDescription() {
-        return "PLACEHOLDER";
+        return "Remove nearest car";
     }
 
     @Override

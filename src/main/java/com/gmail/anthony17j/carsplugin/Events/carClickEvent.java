@@ -32,36 +32,49 @@ public class carClickEvent implements Listener {
 
         if (a.isEmpty()) {
             if (a.getCustomName().contains("CAR_SEAT1")) {
-                String id = a.getCustomName().split("_")[2];
+                if (player.hasPermission("cars.drive")) {
+                    String id = a.getCustomName().split("_")[2];
 
-                Vehicle.seatSize.putIfAbsent(id, a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.seatSize"), PersistentDataType.INTEGER));
-                Vehicle.breakingSpeed.putIfAbsent(id, a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.breakingSpeed"), PersistentDataType.DOUBLE));
-                Vehicle.maxSpeed.putIfAbsent(id, a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.maxSpeed"), PersistentDataType.DOUBLE));
-                Vehicle.maxSpeedBackwards.putIfAbsent(id, a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.maxSpeedBackwards"), PersistentDataType.DOUBLE));
-                Vehicle.accelerationSpeed.putIfAbsent(id, a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.accelerationSpeed"), PersistentDataType.DOUBLE));
-                Vehicle.rotateSpeed.putIfAbsent(id, a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.rotateSpeed"), PersistentDataType.DOUBLE));
-                Vehicle.frictionSpeed.putIfAbsent(id, a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.frictionSpeed"), PersistentDataType.DOUBLE));
+                    Vehicle.seatSize.putIfAbsent(id, a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.seatSize"), PersistentDataType.INTEGER));
+                    Vehicle.breakingSpeed.putIfAbsent(id, a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.breakingSpeed"), PersistentDataType.DOUBLE));
+                    Vehicle.maxSpeed.putIfAbsent(id, a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.maxSpeed"), PersistentDataType.DOUBLE));
+                    Vehicle.maxSpeedBackwards.putIfAbsent(id, a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.maxSpeedBackwards"), PersistentDataType.DOUBLE));
+                    Vehicle.accelerationSpeed.putIfAbsent(id, a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.accelerationSpeed"), PersistentDataType.DOUBLE));
+                    Vehicle.rotateSpeed.putIfAbsent(id, a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.rotateSpeed"), PersistentDataType.DOUBLE));
+                    Vehicle.frictionSpeed.putIfAbsent(id, a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.frictionSpeed"), PersistentDataType.DOUBLE));
 
-                for (Entity entity : player.getWorld().getNearbyEntities(player.getLocation(),10d,10d,10d, (entity -> entity.getType() == EntityType.ARMOR_STAND))) {
-                    if (entity.getCustomName() != null) {
-                        if (entity.getCustomName().equalsIgnoreCase("CAR_SKIN_" + id)) {
-                            Vehicle.autoStand.putIfAbsent(entity.getCustomName(), (ArmorStand) entity);
-                        } else if (entity.getCustomName().contains("CAR_SEAT")) {
-                            for (int i=1;i<=Vehicle.seatSize.get(id);i++) {
-                                if (entity.getCustomName().equalsIgnoreCase("CAR_SEAT" + i + "_" + id)) {
-                                    Vehicle.autoStand.putIfAbsent(entity.getCustomName(), (ArmorStand) entity);
+                    for (Entity entity : player.getWorld().getNearbyEntities(player.getLocation(), 10d, 10d, 10d, (entity -> entity.getType() == EntityType.ARMOR_STAND))) {
+                        if (entity.getCustomName() != null) {
+                            if (entity.getCustomName().equalsIgnoreCase("CAR_SKIN_" + id)) {
+                                Vehicle.autoStand.putIfAbsent(entity.getCustomName(), (ArmorStand) entity);
+                            } else if (entity.getCustomName().contains("CAR_SEAT")) {
+                                for (int i = 1; i <= Vehicle.seatSize.get(id); i++) {
+                                    if (entity.getCustomName().equalsIgnoreCase("CAR_SEAT" + i + "_" + id)) {
+                                        Vehicle.autoStand.putIfAbsent(entity.getCustomName(), (ArmorStand) entity);
 
-                                    Vehicle.seatX.putIfAbsent(entity.getCustomName(), a.getPersistentDataContainer().get(
-                                            new NamespacedKey(CarsPlugin.plugin, "cars.seat" + i + ".X"), PersistentDataType.DOUBLE));
-                                    Vehicle.seatY.putIfAbsent(entity.getCustomName(), a.getPersistentDataContainer().get(
-                                            new NamespacedKey(CarsPlugin.plugin, "cars.seat" + i + ".Y"), PersistentDataType.DOUBLE));
-                                    Vehicle.seatZ.putIfAbsent(entity.getCustomName(), a.getPersistentDataContainer().get(
-                                            new NamespacedKey(CarsPlugin.plugin, "cars.seat" + i + ".Z"), PersistentDataType.DOUBLE));
+                                        Vehicle.seatX.putIfAbsent(entity.getCustomName(), a.getPersistentDataContainer().get(
+                                                new NamespacedKey(CarsPlugin.plugin, "cars.seat" + i + ".X"), PersistentDataType.DOUBLE));
+                                        Vehicle.seatY.putIfAbsent(entity.getCustomName(), a.getPersistentDataContainer().get(
+                                                new NamespacedKey(CarsPlugin.plugin, "cars.seat" + i + ".Y"), PersistentDataType.DOUBLE));
+                                        Vehicle.seatZ.putIfAbsent(entity.getCustomName(), a.getPersistentDataContainer().get(
+                                                new NamespacedKey(CarsPlugin.plugin, "cars.seat" + i + ".Z"), PersistentDataType.DOUBLE));
+                                    }
                                 }
                             }
                         }
                     }
+                    a.addPassenger(player);
+                } else {
+                    player.sendMessage(ChatColor.RED + "Vous n'avez pas la permission pour conduire cette voiture!");
                 }
+            } else {
+                if (player.hasPermission("cars.passenger")) {
+                    a.addPassenger(player);
+                } else {
+                    player.sendMessage(ChatColor.RED + "Vous n'avez pas la permission pour monter dans cette voiture!");
+                }
+            }
+
 
                 /*player.sendMessage("=======================================");
                 player.sendMessage(ChatColor.GREEN + Vehicle.autoStand.toString());
@@ -69,8 +82,7 @@ public class carClickEvent implements Listener {
                 player.sendMessage(ChatColor.GREEN + Vehicle.seatX.toString());
                 player.sendMessage(ChatColor.YELLOW + Vehicle.seatY.toString());
                 player.sendMessage(ChatColor.GREEN + Vehicle.seatZ.toString());*/
-            }
-            a.addPassenger(player);
+
         }
     }
 }

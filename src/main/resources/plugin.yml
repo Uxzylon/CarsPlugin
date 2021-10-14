@@ -3,9 +3,9 @@ version: ${project.version}
 main: com.gmail.anthony17j.carsplugin.CarsPlugin
 api-version: 1.17
 authors: [ Uxzylon ]
-description: PLACEHOLDER
+description: Ajoute des voitures
 commands:
   cars:
-    description: PLACEHOLDER
+    description: Commande Principale
     usage: /<command> <fonction>
     permission: cars.command
