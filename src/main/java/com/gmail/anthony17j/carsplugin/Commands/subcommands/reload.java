@@ -2,6 +2,8 @@ package com.gmail.anthony17j.carsplugin.Commands.subcommands;
 
 import com.gmail.anthony17j.carsplugin.CarsPlugin;
 import com.gmail.anthony17j.carsplugin.Commands.SubCommand;
+import com.gmail.anthony17j.carsplugin.Movement.PacketHandler;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -33,6 +35,9 @@ public class reload extends SubCommand {
     @Override
     public void perform(Player player, String[] args) {
         CarsPlugin.plugin.reloadConfig();
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            PacketHandler.movement(p);
+        }
         player.sendMessage(ChatColor.YELLOW + "Config reloaded!");
         CarsPlugin.plugin.getLogger().info("Config reloaded!");
     }

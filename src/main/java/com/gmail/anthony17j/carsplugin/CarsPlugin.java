@@ -2,6 +2,7 @@ package com.gmail.anthony17j.carsplugin;
 
 import com.gmail.anthony17j.carsplugin.Commands.carsCommand;
 import com.gmail.anthony17j.carsplugin.Events.carClickEvent;
+import com.gmail.anthony17j.carsplugin.Events.playerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -39,5 +40,6 @@ public final class CarsPlugin extends JavaPlugin {
         getCommand("cars").setExecutor(new carsCommand());
 
         getServer().getPluginManager().registerEvents(new carClickEvent(), this);
+        getServer().getPluginManager().registerEvents(new playerJoinEvent(), this);
     }
 }

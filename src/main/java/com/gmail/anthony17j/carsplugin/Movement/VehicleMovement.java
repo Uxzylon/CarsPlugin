@@ -23,13 +23,20 @@ import java.util.Collection;
 
 public class VehicleMovement {
 
-    private static ArmorStand getStand(Collection<Entity> near, String name) {
-        for (Entity entity : near) {
-            if (entity.getCustomName().equalsIgnoreCase(name)) {
-                return (ArmorStand) entity;
+    private static boolean canMount(Block block, ArmorStand standSkin, ArmorStand standDriver, Location skinLocation) {
+        final boolean[] canMount = {false};
+        block.getCollisionShape().getBoundingBoxes().stream().anyMatch(boundingBox -> {
+            double blockHeight = boundingBox.getMaxY() + block.getY();
+            double dif = blockHeight - skinLocation.getY();
+            //player.sendMessage("blockInFront: " + blockInFront + " blockHeight: " + blockHeight + " pos: " + skinLocation.getY() + " dif: " + dif);
+            boolean upperBlockCanPass = block.getRelative(0,1,0).getCollisionShape().getBoundingBoxes().stream().anyMatch(boundingBox1 -> boundingBox1.getMaxY() <= 0.5) || block.getRelative(0,1,0).isPassable();
+            boolean isMatch = dif > 0 && dif <= 0.5 && upperBlockCanPass && block.getRelative(0,2,0).isPassable();
+            if (isMatch) {
+                canMount[0] =true;
             }
-        }
-        return null;
+            return isMatch;
+        });
+        return canMount[0];
     }
 
     public static void vehicleMovement(Player player, PacketPlayInSteerVehicle ppisv) {
@@ -79,19 +86,11 @@ public class VehicleMovement {
 
         //updateSlab
         Block blockInFront = skinLocation.add(skinLocation.getDirection()).getBlock();
-        blockInFront.getCollisionShape().getBoundingBoxes().stream().anyMatch(boundingBox -> {
-            double blockHeight = boundingBox.getMaxY() + blockInFront.getY();
-            double dif = blockHeight - skinLocation.getY();
-            //player.sendMessage("blockInFront: " + blockInFront + " blockHeight: " + blockHeight + " pos: " + skinLocation.getY() + " dif: " + dif);
-            boolean upperBlockCanPass = blockInFront.getRelative(0,1,0).getCollisionShape().getBoundingBoxes().stream().anyMatch(boundingBox1 -> boundingBox1.getMaxY() <= 0.5) || blockInFront.getRelative(0,1,0).isPassable();
-            boolean isMatch = dif > 0 && dif <= 0.5 && upperBlockCanPass && blockInFront.getRelative(0,2,0).isPassable();
-            if (isMatch) {
-                ((CraftArmorStand) standSkin).getHandle().setLocation(standSkin.getLocation().getX(), standSkin.getLocation().getY() + 0.5, standSkin.getLocation().getZ(), standSkin.getLocation().getYaw(), standSkin.getLocation().getPitch());
-                ((CraftArmorStand) standDriver).getHandle().setLocation(standDriver.getLocation().getX(), standDriver.getLocation().getY() + 0.5, standDriver.getLocation().getZ(), standDriver.getLocation().getYaw(), standDriver.getLocation().getPitch());
-            }
-            return isMatch;
-        });
-
+        Block blockInBack = skinLocation.add(skinLocation.getDirection().multiply(-2)).getBlock();
+        if (canMount(blockInFront,standSkin,standDriver,skinLocation) || canMount(blockInBack,standSkin,standDriver,skinLocation)) {
+            ((CraftArmorStand) standSkin).getHandle().setLocation(standSkin.getLocation().getX(), standSkin.getLocation().getY() + 0.5, standSkin.getLocation().getZ(), standSkin.getLocation().getYaw(), standSkin.getLocation().getPitch());
+            ((CraftArmorStand) standDriver).getHandle().setLocation(standDriver.getLocation().getX(), standDriver.getLocation().getY() + 0.5, standDriver.getLocation().getZ(), standDriver.getLocation().getYaw(), standDriver.getLocation().getPitch());
+        }
 
 
         if (ppisv.b() > 0.0) {

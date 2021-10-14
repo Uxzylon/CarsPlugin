@@ -4,6 +4,7 @@ import com.gmail.anthony17j.carsplugin.Commands.SubCommand;
 import com.gmail.anthony17j.carsplugin.Movement.PacketHandler;
 import com.gmail.anthony17j.carsplugin.Utils;
 import com.gmail.anthony17j.carsplugin.Vehicle;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
@@ -41,12 +42,15 @@ public class remove extends SubCommand {
         ArmorStand car = Utils.getClosestCar(player);
         if (car != null) {
             String id = car.getCustomName().split("_")[2];
-            for (Entity entity : player.getWorld().getNearbyEntities(player.getLocation(),10d,10d,10d, (entity -> entity.getCustomName().contains(id)))) {
-                entity.remove();
-                Vehicle.autoStand.remove(entity.getCustomName());
-                Vehicle.seatX.remove(entity.getCustomName());
-                Vehicle.seatY.remove(entity.getCustomName());
-                Vehicle.seatZ.remove(entity.getCustomName());
+            for (Entity entity : car.getWorld().getNearbyEntities(car.getLocation(),10d,10d,10d, (entity -> entity.getType() == EntityType.ARMOR_STAND))) {
+                if (entity.getCustomName() != null || entity.getCustomName().contains(id)) {
+                    entity.remove();
+                    Vehicle.autoStand.remove(entity.getCustomName());
+                    Vehicle.seatX.remove(entity.getCustomName());
+                    Vehicle.seatY.remove(entity.getCustomName());
+                    Vehicle.seatZ.remove(entity.getCustomName());
+                }
+
             }
             Vehicle.seatSize.remove(id);
             Vehicle.speed.remove(id);
@@ -56,6 +60,10 @@ public class remove extends SubCommand {
             Vehicle.accelerationSpeed.remove(id);
             Vehicle.rotateSpeed.remove(id);
             Vehicle.frictionSpeed.remove(id);
+
+            player.sendMessage(ChatColor.YELLOW + "Car Removed! id=" + id);
+        } else {
+            player.sendMessage(ChatColor.RED + "No Car Found!");
         }
     }
 }

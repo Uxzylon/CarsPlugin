@@ -63,12 +63,12 @@ public class carClickEvent implements Listener {
                     }
                 }
 
-                player.sendMessage("=======================================");
+                /*player.sendMessage("=======================================");
                 player.sendMessage(ChatColor.GREEN + Vehicle.autoStand.toString());
                 player.sendMessage(ChatColor.YELLOW + Vehicle.seatSize.toString());
                 player.sendMessage(ChatColor.GREEN + Vehicle.seatX.toString());
                 player.sendMessage(ChatColor.YELLOW + Vehicle.seatY.toString());
-                player.sendMessage(ChatColor.GREEN + Vehicle.seatZ.toString());
+                player.sendMessage(ChatColor.GREEN + Vehicle.seatZ.toString());*/
             }
             a.addPassenger(player);
         }

@@ -3,12 +3,15 @@ package com.gmail.anthony17j.carsplugin.Commands.subcommands;
 import com.gmail.anthony17j.carsplugin.CarsPlugin;
 import com.gmail.anthony17j.carsplugin.Commands.SubCommand;
 import com.gmail.anthony17j.carsplugin.Utils;
+import com.gmail.anthony17j.carsplugin.Vehicle;
+import net.minecraft.world.entity.decoration.EntityArmorStand;
 import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockFace;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftArmorStand;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -91,14 +94,18 @@ public class place extends SubCommand {
                     if (CarsPlugin.plugin.getConfig().getConfigurationSection("CarsList.Test.Seats") != null) {
                         ArmorStand standDriver = null;
                         for (int i = 1; i<= CarsPlugin.plugin.getConfig().getConfigurationSection("CarsList.Test.Seats").getKeys(false).size(); i++) {
-                            Location loc = new Location(
-                                    player.getWorld(),
-                                    locationX + CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".X"),
-                                    locationY + CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".Y"),
-                                    locationZ + CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".Z"),
-                                    yaw, 0
-                            );
+
+                            double xOffset = CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".X");
+                            double yOffset = CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".Y");
+                            double zOffset = CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".Z");
+                            Location locvp = location.clone();
+                            Location fbvp = locvp.add(locvp.getDirection().setY(0).normalize().multiply(xOffset));
+                            float zvp = (float) (fbvp.getZ() + zOffset * Math.sin(Math.toRadians(fbvp.getYaw())));
+                            float xvp = (float) (fbvp.getX() + zOffset * Math.cos(Math.toRadians(fbvp.getYaw())));
+                            Location loc = new Location(standSkin.getWorld(), xvp, location.getY() + yOffset, zvp, fbvp.getYaw(), fbvp.getPitch());
+
                             ArmorStand standSeatLoop = (ArmorStand) player.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
+
                             if (i == 1) {
                                 standDriver = standSeatLoop;
                             }
@@ -107,7 +114,7 @@ public class place extends SubCommand {
                             standSeatLoop.setCustomName("CAR_SEAT" + i + "_" + id);
                             standSeatLoop.getEquipment().setHelmet(item2);
                             Utils.setSlotsDisabled(standSeatLoop, true);
-                            player.sendMessage(standSeatLoop.getCustomName());
+                            //player.sendMessage(standSeatLoop.getCustomName());
                             //Entity villager = player.getWorld().spawnEntity(location, EntityType.VILLAGER);
                             //standSeatLoop.addPassenger(villager);
 
