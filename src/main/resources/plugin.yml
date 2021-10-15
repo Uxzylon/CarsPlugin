@@ -6,9 +6,9 @@ authors: [ Uxzylon ]
 description: Ajoute des voitures
 permissions:
   cars.drive.*:
-
+    description: Autorise la conduite
   cars.passenger.*:
-
+    description: Autorise la montee en passager
 commands:
   cars:
     description: Commande Principale
