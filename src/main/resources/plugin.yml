@@ -4,6 +4,11 @@ main: com.gmail.anthony17j.carsplugin.CarsPlugin
 api-version: 1.17
 authors: [ Uxzylon ]
 description: Ajoute des voitures
+permissions:
+  cars.drive.*:
+
+  cars.passenger.*:
+
 commands:
   cars:
     description: Commande Principale

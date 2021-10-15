@@ -91,13 +91,12 @@ public class place extends SubCommand {
                     standSkin.getEquipment().setHelmet(item);
                     Utils.setSlotsDisabled(standSkin, true);
 
-                    if (CarsPlugin.plugin.getConfig().getConfigurationSection("CarsList.Test.Seats") != null) {
-                        ArmorStand standDriver = null;
-                        for (int i = 1; i<= CarsPlugin.plugin.getConfig().getConfigurationSection("CarsList.Test.Seats").getKeys(false).size(); i++) {
+                    if (CarsPlugin.plugin.getConfig().getConfigurationSection("CarsList." + args[1] + ".Seats") != null) {
+                        for (int i = 1; i<= CarsPlugin.plugin.getConfig().getConfigurationSection("CarsList." + args[1] + ".Seats").getKeys(false).size(); i++) {
 
-                            double xOffset = CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".X");
-                            double yOffset = CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".Y");
-                            double zOffset = CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".Z");
+                            double xOffset = CarsPlugin.plugin.getConfig().getDouble("CarsList." + args[1] + ".Seats." + i + ".X");
+                            double yOffset = CarsPlugin.plugin.getConfig().getDouble("CarsList." + args[1] + ".Seats." + i + ".Y");
+                            double zOffset = CarsPlugin.plugin.getConfig().getDouble("CarsList." + args[1] + ".Seats." + i + ".Z");
                             Location locvp = location.clone();
                             Location fbvp = locvp.add(locvp.getDirection().setY(0).normalize().multiply(xOffset));
                             float zvp = (float) (fbvp.getZ() + zOffset * Math.sin(Math.toRadians(fbvp.getYaw())));
@@ -107,8 +106,32 @@ public class place extends SubCommand {
                             ArmorStand standSeatLoop = (ArmorStand) player.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
 
                             if (i == 1) {
-                                standDriver = standSeatLoop;
+                                standSeatLoop.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.seatSize"), PersistentDataType.INTEGER,
+                                        CarsPlugin.plugin.getConfig().getConfigurationSection("CarsList." + args[1] + ".Seats").getKeys(false).size());
+
+                                standSeatLoop.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.seat" + i + ".X"), PersistentDataType.DOUBLE,
+                                        CarsPlugin.plugin.getConfig().getDouble("CarsList." + args[1] + ".Seats." + i + ".X"));
+                                standSeatLoop.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.seat" + i + ".Y"), PersistentDataType.DOUBLE,
+                                        CarsPlugin.plugin.getConfig().getDouble("CarsList." + args[1] + ".Seats." + i + ".Y"));
+                                standSeatLoop.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.seat" + i + ".Z"), PersistentDataType.DOUBLE,
+                                        CarsPlugin.plugin.getConfig().getDouble("CarsList." + args[1] + ".Seats." + i + ".Z"));
+
+                                standSeatLoop.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.breakingSpeed"), PersistentDataType.DOUBLE,
+                                        CarsPlugin.plugin.getConfig().getDouble("CarsList." + args[1] + ".breakingSpeed"));
+                                standSeatLoop.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.maxSpeed"), PersistentDataType.DOUBLE,
+                                        CarsPlugin.plugin.getConfig().getDouble("CarsList." + args[1] + ".maxSpeed"));
+                                standSeatLoop.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.maxSpeedBackwards"), PersistentDataType.DOUBLE,
+                                        CarsPlugin.plugin.getConfig().getDouble("CarsList." + args[1] + ".maxSpeedBackwards"));
+                                standSeatLoop.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.accelerationSpeed"), PersistentDataType.DOUBLE,
+                                        CarsPlugin.plugin.getConfig().getDouble("CarsList." + args[1] + ".accelerationSpeed"));
+                                standSeatLoop.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.rotateSpeed"), PersistentDataType.DOUBLE,
+                                        CarsPlugin.plugin.getConfig().getDouble("CarsList." + args[1] + ".rotateSpeed"));
+                                standSeatLoop.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.frictionSpeed"), PersistentDataType.DOUBLE,
+                                        CarsPlugin.plugin.getConfig().getDouble("CarsList." + args[1] + ".frictionSpeed"));
                             }
+
+                            standSeatLoop.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.name"), PersistentDataType.STRING, args[1]);
+
                             standSeatLoop.setVisible(false);
                             standSeatLoop.setGravity(false);
                             standSeatLoop.setCustomName("CAR_SEAT" + i + "_" + id);
@@ -117,34 +140,8 @@ public class place extends SubCommand {
                             //player.sendMessage(standSeatLoop.getCustomName());
                             //Entity villager = player.getWorld().spawnEntity(location, EntityType.VILLAGER);
                             //standSeatLoop.addPassenger(villager);
-
-                            standDriver.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.seatSize"), PersistentDataType.INTEGER,
-                                    CarsPlugin.plugin.getConfig().getConfigurationSection("CarsList.Test.Seats").getKeys(false).size());
-
-                            standDriver.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.seat" + i + ".X"), PersistentDataType.DOUBLE,
-                                    CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".X"));
-                            standDriver.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.seat" + i + ".Y"), PersistentDataType.DOUBLE,
-                                    CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".Y"));
-                            standDriver.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.seat" + i + ".Z"), PersistentDataType.DOUBLE,
-                                    CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.Seats." + i + ".Z"));
-
-                            standDriver.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.breakingSpeed"), PersistentDataType.DOUBLE,
-                                    CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.breakingSpeed"));
-                            standDriver.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.maxSpeed"), PersistentDataType.DOUBLE,
-                                    CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.maxSpeed"));
-                            standDriver.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.maxSpeedBackwards"), PersistentDataType.DOUBLE,
-                                    CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.maxSpeedBackwards"));
-                            standDriver.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.accelerationSpeed"), PersistentDataType.DOUBLE,
-                                    CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.accelerationSpeed"));
-                            standDriver.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.rotateSpeed"), PersistentDataType.DOUBLE,
-                                    CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.rotateSpeed"));
-                            standDriver.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.frictionSpeed"), PersistentDataType.DOUBLE,
-                                    CarsPlugin.plugin.getConfig().getDouble("CarsList.Test.frictionSpeed"));
                         }
                     }
-
-
-
                     player.sendMessage(ChatColor.YELLOW + "Car Placed! id=" + id);
                 }
             }

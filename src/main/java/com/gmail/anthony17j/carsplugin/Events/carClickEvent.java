@@ -31,8 +31,9 @@ public class carClickEvent implements Listener {
         event.setCancelled(true);
 
         if (a.isEmpty()) {
+            String carName = a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.name"), PersistentDataType.STRING);
             if (a.getCustomName().contains("CAR_SEAT1")) {
-                if (player.hasPermission("cars.drive")) {
+                if (player.hasPermission("cars.drive." + carName)) {
                     String id = a.getCustomName().split("_")[2];
 
                     Vehicle.seatSize.putIfAbsent(id, a.getPersistentDataContainer().get(new NamespacedKey(CarsPlugin.plugin, "cars.seatSize"), PersistentDataType.INTEGER));
@@ -68,21 +69,12 @@ public class carClickEvent implements Listener {
                     player.sendMessage(ChatColor.RED + "Vous n'avez pas la permission pour conduire cette voiture!");
                 }
             } else {
-                if (player.hasPermission("cars.passenger")) {
+                if (player.hasPermission("cars.passenger." + carName)) {
                     a.addPassenger(player);
                 } else {
                     player.sendMessage(ChatColor.RED + "Vous n'avez pas la permission pour monter dans cette voiture!");
                 }
             }
-
-
-                /*player.sendMessage("=======================================");
-                player.sendMessage(ChatColor.GREEN + Vehicle.autoStand.toString());
-                player.sendMessage(ChatColor.YELLOW + Vehicle.seatSize.toString());
-                player.sendMessage(ChatColor.GREEN + Vehicle.seatX.toString());
-                player.sendMessage(ChatColor.YELLOW + Vehicle.seatY.toString());
-                player.sendMessage(ChatColor.GREEN + Vehicle.seatZ.toString());*/
-
         }
     }
 }
