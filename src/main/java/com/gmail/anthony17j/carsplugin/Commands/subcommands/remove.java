@@ -33,6 +33,16 @@ public class remove extends SubCommand {
     }
 
     @Override
+    public String permission() {
+        return "cars.command.remove";
+    }
+
+    @Override
+    public boolean canRunConsole() {
+        return false;
+    }
+
+    @Override
     public List<String> getSubcommandArguments(Player player, String[] args) {
         return Collections.emptyList();
     }
@@ -43,7 +53,7 @@ public class remove extends SubCommand {
         if (car != null) {
             String id = car.getCustomName().split("_")[2];
             for (Entity entity : car.getWorld().getNearbyEntities(car.getLocation(),10d,10d,10d, (entity -> entity.getType() == EntityType.ARMOR_STAND))) {
-                if (entity.getCustomName() != null || entity.getCustomName().contains(id)) {
+                if (entity.getCustomName() != null && entity.getCustomName().contains(id)) {
                     entity.remove();
                     Vehicle.autoStand.remove(entity.getCustomName());
                     Vehicle.seatX.remove(entity.getCustomName());
