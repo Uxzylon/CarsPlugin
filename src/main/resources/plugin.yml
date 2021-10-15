@@ -9,6 +9,18 @@ permissions:
     description: Autorise la conduite
   cars.passenger.*:
     description: Autorise la montee en passager
+  cars.command.place:
+    description: Autorise fonction place
+    children:
+      cars.command: true
+  cars.command.remove:
+    description: Autorise fonction remove
+    children:
+      cars.command: true
+  cars.command.reload:
+    description: Autorise la fonction reload
+    children:
+      cars.command: true
 commands:
   cars:
     description: Commande Principale

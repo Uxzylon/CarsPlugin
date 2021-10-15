@@ -2,8 +2,6 @@ package com.gmail.anthony17j.carsplugin.Commands;
 
 import com.gmail.anthony17j.carsplugin.Commands.subcommands.*;
 import com.gmail.anthony17j.carsplugin.CarsPlugin;
-import com.gmail.anthony17j.carsplugin.Movement.PacketHandler;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -26,7 +24,9 @@ public class carsCommand implements TabExecutor {
     public void help(Player player) {
         player.sendMessage(ChatColor.YELLOW + "============" + ChatColor.GREEN + " CarsPlugin " + ChatColor.YELLOW + "============");
         for (int i=0; i < getSubCommands().size(); i++) {
-            player.sendMessage(getSubCommands().get(i).getSyntax() + " - " + ChatColor.GRAY + getSubCommands().get(i).getDescription());
+            if (player.hasPermission(getSubCommands().get(i).permission())) {
+                player.sendMessage(getSubCommands().get(i).getSyntax() + " - " + ChatColor.GRAY + getSubCommands().get(i).getDescription());
+            }
         }
     }
 
@@ -38,8 +38,8 @@ public class carsCommand implements TabExecutor {
                 boolean found = false;
                 for (int i=0; i < getSubCommands().size(); i++) {
                     if (args[0].equalsIgnoreCase(getSubCommands().get(i).getName())) {
+                        found = true;
                         if (player.hasPermission(getSubCommands().get(i).permission())) {
-                            found = true;
                             getSubCommands().get(i).perform(player, args);
                         } else {
                             player.sendMessage(ChatColor.RED + "Vous n'avez pas la permission!");
@@ -68,10 +68,13 @@ public class carsCommand implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        Player player = (Player) sender;
         if (args.length == 1) {
             ArrayList<String> subCommandsArguments = new ArrayList<>();
             for (int i=0; i < getSubCommands().size(); i++) {
-                subCommandsArguments.add(getSubCommands().get(i).getName());
+                if (player.hasPermission(getSubCommands().get(i).permission())) {
+                    subCommandsArguments.add(getSubCommands().get(i).getName());
+                }
             }
             return subCommandsArguments;
         } else if (args.length >= 2) {
