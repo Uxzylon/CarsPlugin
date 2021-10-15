@@ -2,6 +2,8 @@ package com.gmail.anthony17j.carsplugin.Commands;
 
 import com.gmail.anthony17j.carsplugin.Commands.subcommands.*;
 import com.gmail.anthony17j.carsplugin.CarsPlugin;
+import com.gmail.anthony17j.carsplugin.Movement.PacketHandler;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -19,9 +21,7 @@ public class carsCommand implements TabExecutor {
         subCommands.add(new reload());
     }
 
-    public ArrayList<SubCommand> getSubCommands() {
-        return subCommands;
-    }
+    public ArrayList<SubCommand> getSubCommands() {return subCommands;}
 
     public void help(Player player) {
         player.sendMessage(ChatColor.YELLOW + "============" + ChatColor.GREEN + " CarsPlugin " + ChatColor.YELLOW + "============");
@@ -34,27 +34,34 @@ public class carsCommand implements TabExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof  Player) {
             Player player = (Player) sender;
-            int y = -1;
-            if (player.hasPermission("cars.command")) {
-                if (args.length > 0) {
-                    for (int i=0; i < getSubCommands().size(); i++) {
-                        if (args[0].equalsIgnoreCase(getSubCommands().get(i).getName())) {
-                            y = i;
+            if (args.length > 0) {
+                boolean found = false;
+                for (int i=0; i < getSubCommands().size(); i++) {
+                    if (args[0].equalsIgnoreCase(getSubCommands().get(i).getName())) {
+                        if (player.hasPermission(getSubCommands().get(i).permission())) {
+                            found = true;
+                            getSubCommands().get(i).perform(player, args);
+                        } else {
+                            player.sendMessage(ChatColor.RED + "Vous n'avez pas la permission!");
                         }
                     }
-                    if (y != -1) {
-                        getSubCommands().get(y).perform(player, args);
-                    } else {
-                        help(player);
-                    }
-                } else {
+                }
+                if (!found) {
                     help(player);
                 }
             } else {
-                player.sendMessage(ChatColor.RED + "Vous n'avez pas la permission!");
+                help(player);
             }
         } else {
-            CarsPlugin.plugin.getLogger().info("Player Only!");
+            for (int i=0; i < getSubCommands().size(); i++) {
+                if (args[0].equalsIgnoreCase(getSubCommands().get(i).getName())) {
+                    if (getSubCommands().get(i).canRunConsole()) {
+                        getSubCommands().get(i).perform(null, args);
+                    } else {
+                        CarsPlugin.plugin.getLogger().info("Player Only!");
+                    }
+                }
+            }
         }
         return true;
     }

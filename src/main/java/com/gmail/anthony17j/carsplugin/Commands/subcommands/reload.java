@@ -28,6 +28,16 @@ public class reload extends SubCommand {
     }
 
     @Override
+    public String permission() {
+        return "cars.command.reload";
+    }
+
+    @Override
+    public boolean canRunConsole() {
+        return true;
+    }
+
+    @Override
     public List<String> getSubcommandArguments(Player player, String[] args) {
         return Collections.emptyList();
     }
@@ -38,7 +48,9 @@ public class reload extends SubCommand {
         for (Player p : Bukkit.getOnlinePlayers()) {
             PacketHandler.movement(p);
         }
-        player.sendMessage(ChatColor.YELLOW + "Config reloaded!");
+        if (player != null) {
+            player.sendMessage(ChatColor.YELLOW + "Config reloaded!");
+        }
         CarsPlugin.plugin.getLogger().info("Config reloaded!");
     }
 }

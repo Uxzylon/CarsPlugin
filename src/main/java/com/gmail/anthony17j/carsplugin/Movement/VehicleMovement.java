@@ -1,29 +1,20 @@
 package com.gmail.anthony17j.carsplugin.Movement;
 
-import com.gmail.anthony17j.carsplugin.CarsPlugin;
 import com.gmail.anthony17j.carsplugin.Vehicle;
 import net.minecraft.network.protocol.game.PacketPlayInSteerVehicle;
-import net.minecraft.network.protocol.game.PacketPlayOutEntityHeadRotation;
 import net.minecraft.world.entity.decoration.EntityArmorStand;
-import net.minecraft.world.level.levelgen.HeightMap;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftArmorStand;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Collection;
 
 public class VehicleMovement {
 
-    private static boolean canMount(Block block, ArmorStand standSkin, ArmorStand standDriver, Location skinLocation) {
+    private static boolean canMount(Block block, Location skinLocation) {
         final boolean[] canMount = {false};
         block.getCollisionShape().getBoundingBoxes().stream().anyMatch(boundingBox -> {
             double blockHeight = boundingBox.getMaxY() + block.getY();
@@ -87,7 +78,7 @@ public class VehicleMovement {
         //updateSlab
         Block blockInFront = skinLocation.add(skinLocation.getDirection()).getBlock();
         Block blockInBack = skinLocation.add(skinLocation.getDirection().multiply(-2)).getBlock();
-        if (canMount(blockInFront,standSkin,standDriver,skinLocation) || canMount(blockInBack,standSkin,standDriver,skinLocation)) {
+        if (canMount(blockInFront,skinLocation) || canMount(blockInBack,skinLocation)) {
             ((CraftArmorStand) standSkin).getHandle().setLocation(standSkin.getLocation().getX(), standSkin.getLocation().getY() + 0.5, standSkin.getLocation().getZ(), standSkin.getLocation().getYaw(), standSkin.getLocation().getPitch());
             ((CraftArmorStand) standDriver).getHandle().setLocation(standDriver.getLocation().getX(), standDriver.getLocation().getY() + 0.5, standDriver.getLocation().getZ(), standDriver.getLocation().getYaw(), standDriver.getLocation().getPitch());
         }

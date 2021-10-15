@@ -3,15 +3,12 @@ package com.gmail.anthony17j.carsplugin.Commands.subcommands;
 import com.gmail.anthony17j.carsplugin.CarsPlugin;
 import com.gmail.anthony17j.carsplugin.Commands.SubCommand;
 import com.gmail.anthony17j.carsplugin.Utils;
-import com.gmail.anthony17j.carsplugin.Vehicle;
-import net.minecraft.world.entity.decoration.EntityArmorStand;
 import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftArmorStand;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -36,6 +33,16 @@ public class place extends SubCommand {
     @Override
     public String getSyntax() {
         return "/cars place <car>";
+    }
+
+    @Override
+    public String permission() {
+        return "cars.command.place";
+    }
+
+    @Override
+    public boolean canRunConsole() {
+        return false;
     }
 
     @Override
@@ -92,7 +99,8 @@ public class place extends SubCommand {
                     Utils.setSlotsDisabled(standSkin, true);
 
                     if (CarsPlugin.plugin.getConfig().getConfigurationSection("CarsList." + args[1] + ".Seats") != null) {
-                        for (int i = 1; i<= CarsPlugin.plugin.getConfig().getConfigurationSection("CarsList." + args[1] + ".Seats").getKeys(false).size(); i++) {
+                        int nbrSeats = CarsPlugin.plugin.getConfig().getConfigurationSection("CarsList." + args[1] + ".Seats").getKeys(false).size();
+                        for (int i = 1; i<= nbrSeats; i++) {
 
                             double xOffset = CarsPlugin.plugin.getConfig().getDouble("CarsList." + args[1] + ".Seats." + i + ".X");
                             double yOffset = CarsPlugin.plugin.getConfig().getDouble("CarsList." + args[1] + ".Seats." + i + ".Y");
@@ -106,15 +114,16 @@ public class place extends SubCommand {
                             ArmorStand standSeatLoop = (ArmorStand) player.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
 
                             if (i == 1) {
-                                standSeatLoop.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.seatSize"), PersistentDataType.INTEGER,
-                                        CarsPlugin.plugin.getConfig().getConfigurationSection("CarsList." + args[1] + ".Seats").getKeys(false).size());
+                                standSeatLoop.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.seatSize"), PersistentDataType.INTEGER, nbrSeats);
 
-                                standSeatLoop.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.seat" + i + ".X"), PersistentDataType.DOUBLE,
-                                        CarsPlugin.plugin.getConfig().getDouble("CarsList." + args[1] + ".Seats." + i + ".X"));
-                                standSeatLoop.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.seat" + i + ".Y"), PersistentDataType.DOUBLE,
-                                        CarsPlugin.plugin.getConfig().getDouble("CarsList." + args[1] + ".Seats." + i + ".Y"));
-                                standSeatLoop.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.seat" + i + ".Z"), PersistentDataType.DOUBLE,
-                                        CarsPlugin.plugin.getConfig().getDouble("CarsList." + args[1] + ".Seats." + i + ".Z"));
+                                for (int y=1;y<=nbrSeats;y++) {
+                                    standSeatLoop.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.seat" + y + ".X"), PersistentDataType.DOUBLE,
+                                            CarsPlugin.plugin.getConfig().getDouble("CarsList." + args[1] + ".Seats." + y + ".X"));
+                                    standSeatLoop.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.seat" + y + ".Y"), PersistentDataType.DOUBLE,
+                                            CarsPlugin.plugin.getConfig().getDouble("CarsList." + args[1] + ".Seats." + y + ".Y"));
+                                    standSeatLoop.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.seat" + y + ".Z"), PersistentDataType.DOUBLE,
+                                            CarsPlugin.plugin.getConfig().getDouble("CarsList." + args[1] + ".Seats." + y + ".Z"));
+                                }
 
                                 standSeatLoop.getPersistentDataContainer().set(new NamespacedKey(CarsPlugin.plugin, "cars.breakingSpeed"), PersistentDataType.DOUBLE,
                                         CarsPlugin.plugin.getConfig().getDouble("CarsList." + args[1] + ".breakingSpeed"));
@@ -145,6 +154,8 @@ public class place extends SubCommand {
                     player.sendMessage(ChatColor.YELLOW + "Car Placed! id=" + id);
                 }
             }
+        } else {
+            player.sendMessage(ChatColor.RED + "Vous devez donner un nom de voiture!");
         }
     }
 
