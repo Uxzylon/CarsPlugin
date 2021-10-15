@@ -6,12 +6,12 @@
 
     <groupId>com.gmail.anthony17j</groupId>
     <artifactId>CarsPlugin</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>CarsPlugin</name>
 
-    <description>PLACEHOLDER</description>
+    <description>Ajoute des voitures au serveur!</description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
